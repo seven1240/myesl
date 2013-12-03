@@ -15,5 +15,22 @@ acd: acd.c
 icharge: icharge.c
 	gcc $(CFLAGS) -o icharge icharge.c $(ESLPATH)/libesl.a
 
+# Erlang
+
+erl: echarge fsmcharge
+
+echarge: echarge.erl
+	erlc echarge.erl
+
+echarge-run:
+	erl -pa . -setcookie ClueCon -sname test@localhost
+
+fsmcharge: fsmcharge.erl
+	erlc fsmcharge.erl
+
+fsmcharge-run:
+	erl -pa . -setcookie ClueCon -sname test@localhost
+
 clean:
-	myesl charge acd icharge
+	rm myesl charge acd icharge *.beam
+
