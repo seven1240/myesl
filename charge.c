@@ -5,7 +5,7 @@
 #define ERROR_PROMPT "say:输入错误，请重新输入"
 #define BALANCE 100
 #define CHARGE  100
-#define set_string(dest, str) memcpy(dest, str, sizeof(dest))
+#define set_string(dest, str) strncpy(dest, str, sizeof(dest))
 #define ENSURE_INPUT(input) if (!input) { \
 	esl_execute(ch->handle, "speak", "再见", NULL); \
 	/* sleep(1); */\
@@ -197,15 +197,11 @@ static void charge_callback(esl_socket_t server_sock, esl_socket_t client_sock, 
 	charge_helper.state = CHARGE_WELCOME;
 
 	esl_attach_handle(&handle, client_sock, addr);
-
 	esl_log(ESL_LOG_INFO, "Connected! %d\n", handle.sock);
-
 	esl_events(&handle, ESL_EVENT_TYPE_PLAIN, "CHANNEL_EXECUTE_COMPLETE");
-
-	esl_send_recv(&handle, "myevents");
-	esl_log(ESL_LOG_INFO, "%s\n", handle.last_sr_reply);
+	esl_filter(&handle, "Unique-ID", esl_event_get_header(handle.info_event, "Caller-Unique-ID"));
 	esl_send_recv(&handle, "linger 5");
-	esl_log(ESL_LOG_INFO, "%s\n", handle.last_sr_reply);
+   	esl_log(ESL_LOG_INFO, "%s\n", handle.last_sr_reply);
 
 	esl_execute(&handle, "answer", NULL, NULL);
 	esl_execute(&handle, "set", "tts_engine=tts_commandline", NULL);
