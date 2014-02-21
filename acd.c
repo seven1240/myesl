@@ -69,7 +69,7 @@ reset_agent(agent_t *agent)
 	esl_mutex_unlock(MUTEX);
 }
 
-static void acd_callback(esl_socket_t server_sock, esl_socket_t client_sock, struct sockaddr_in *addr)
+static void acd_callback(esl_socket_t server_sock, esl_socket_t client_sock, struct sockaddr_in *addr, void *user_data)
 {
 	esl_handle_t handle = {{0}};
 	esl_status_t status = ESL_SUCCESS;
@@ -163,7 +163,7 @@ int main(void)
 
 	esl_global_set_default_logger(ESL_LOG_LEVEL_INFO);
 	esl_log(ESL_LOG_INFO, "ACD Server listening at localhost:8040 ...\n");
-	esl_listen_threaded("localhost", 8040, acd_callback, 100000);
+	esl_listen_threaded("localhost", 8040, acd_callback, NULL, 100000);
 
 	esl_mutex_destroy(&MUTEX);
 

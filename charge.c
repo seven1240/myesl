@@ -186,7 +186,7 @@ select_menu:
 
 }
 
-static void charge_callback(esl_socket_t server_sock, esl_socket_t client_sock, struct sockaddr_in *addr)
+static void charge_callback(esl_socket_t server_sock, esl_socket_t client_sock, struct sockaddr_in *addr, void *user_data)
 {
 	esl_handle_t handle = {{0}};
 	esl_status_t status;
@@ -222,7 +222,7 @@ static void charge_callback(esl_socket_t server_sock, esl_socket_t client_sock, 
 int main(void)
 {
 	esl_global_set_default_logger(ESL_LOG_LEVEL_INFO);
-	esl_listen_threaded("localhost", 8040, charge_callback, 100000);
+	esl_listen_threaded("localhost", 8040, charge_callback, NULL, 100000);
 
 	return 0;
 }
