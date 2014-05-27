@@ -1,19 +1,22 @@
 ESLPATH = /usr/src/freeswitch/libs/esl
 CFLAGS  = -ggdb -I$(ESLPATH)/src/include
+# LIBESL  = $(ESLPATH)/libesl.a             # 1.2
+LIBESL  = $(ESLPATH)/.libs/libesl.a         # 1.4
+
 
 all: myesl charge acd icharge
 
 myesl: myesl.c
-	gcc $(CFLAGS) -o myesl myesl.c $(ESLPATH)/libesl.a
+	gcc $(CFLAGS) -o myesl myesl.c $(LIBESL)
 
 charge: charge.c
-	gcc $(CFLAGS) -o charge charge.c $(ESLPATH)/libesl.a
+	gcc $(CFLAGS) -o charge charge.c $(LIBESL)
 
 acd: acd.c
-	gcc $(CFLAGS) -o acd acd.c $(ESLPATH)/libesl.a
+	gcc $(CFLAGS) -o acd acd.c $(LIBESL)
 
 icharge: icharge.c
-	gcc $(CFLAGS) -o icharge icharge.c $(ESLPATH)/libesl.a
+	gcc $(CFLAGS) -o icharge icharge.c $(LIBESL)
 
 # Erlang
 
@@ -32,5 +35,7 @@ fsmcharge-run:
 	erl -pa . -setcookie ClueCon -sname test@localhost
 
 clean:
-	rm myesl charge acd icharge *.beam
+	rm -f myesl charge acd icharge *.beam event_stat
+	rm -rf *.o *.so *.dSYM
+
 
