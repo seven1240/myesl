@@ -61,7 +61,7 @@ agent_t *find_available_agent()
 	return NULL;
 }
 
-reset_agent(agent_t *agent)
+void reset_agent(agent_t *agent)
 {
 	esl_mutex_lock(MUTEX);
 	agent->state = AGENT_IDLE;
