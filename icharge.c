@@ -11,7 +11,11 @@ int check_account_password(const char *account, const char *password)
 
 void process_event(esl_handle_t *handle, esl_event_t *event)
 {
-    const char *uuid;
+    const char *uuid = esl_event_get_header(event, "Caller-Unique-ID");
+
+    uuid = strdup(uuid);
+    if (!uuid) abort();
+
     switch (event->event_id) {
         case ESL_EVENT_CHANNEL_PARK:
         {
@@ -22,7 +26,6 @@ void process_event(esl_handle_t *handle, esl_event_t *event)
 
             if (!service || (service && strcmp(service, "icharge"))) break;
 
-            uuid = esl_event_get_header(event, "Caller-Unique-ID");
             esl_log(ESL_LOG_INFO, "New Call %s\n", uuid);
 
             esl_execute(handle, "answer", NULL, uuid);
@@ -50,7 +53,6 @@ again:
             const char *application;
             const char *charge_state;
 
-            uuid = esl_event_get_header(event, "Caller-Unique-ID");
             application = esl_event_get_header(event, "Application");
             charge_state = esl_event_get_header(event, "variable_charge_state");
 
@@ -73,12 +75,13 @@ again:
             break;
         }
         case ESL_EVENT_CHANNEL_HANGUP_COMPLETE:
-            uuid = esl_event_get_header(event, "Caller-Unique-ID");
             esl_log(ESL_LOG_INFO, "Hangup %s\n", uuid);
             break;
         default:
             break;
     }
+
+    free((void *)uuid);
 }
 
 int main(void)
